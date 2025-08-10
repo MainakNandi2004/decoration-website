@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Artisan Gallery</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * {
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .gradient-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%);
+            backdrop-filter: blur(10px);
+        }
+        
+        .gradient-button {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 50%, #ff9ff3 100%);
+        }
+        
+        .gradient-button:hover {
+            background: linear-gradient(135deg, #ff5252 0%, #d63031 50%, #fd79a8 100%);
+            transform: translateY(-2px);
+        }
+        
+        .paint-stroke {
+            position: absolute;
+            width: 100px;
+            height: 20px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            border-radius: 50px;
+            opacity: 0.3;
+            transform: rotate(-15deg);
+        }
+        
+        .floating-shape {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.1;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+        
+        .card-shadow {
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .input-focus:focus {
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
+            border-color: #667eea;
+        }
+        
+        .payment-option {
+            transition: all 0.3s ease;
+        }
+        
+        .payment-option:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        
+        .payment-option.selected {
+            border-color: #667eea;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+        }
+    </style>
+</head>
+<body class="min-h-screen gradient-bg relative overflow-x-hidden">
+    <!-- Floating Background Shapes -->
+    <div class="floating-shape w-32 h-32 bg-pink-300 top-10 left-10" style="animation-delay: 0s;"></div>
+    <div class="floating-shape w-24 h-24 bg-purple-300 top-32 right-20" style="animation-delay: 2s;"></div>
+    <div class="floating-shape w-40 h-40 bg-blue-300 bottom-20 left-1/4" style="animation-delay: 4s;"></div>
+    <div class="floating-shape w-28 h-28 bg-orange-300 bottom-32 right-10" style="animation-delay: 1s;"></div>
+    
+    <!-- Paint Strokes -->
+    <div class="paint-stroke top-20 right-1/3"></div>
+    <div class="paint-stroke bottom-40 left-1/4" style="transform: rotate(25deg);"></div>
+
+    <div class="container mx-auto px-4 py-8 relative z-10">
+        <!-- Header -->
+        <header class="gradient-card rounded-3xl p-6 mb-8 card-shadow">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 bg-gradient-to-r from-pink-500 to-purple-600 rounded-2xl flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"/>
+                        </svg>
+                    </div>
+                    <h1 class="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">Artisan Gallery</h1>
+                </div>
+
+            </div>
+        </header>
+
+        <div class="grid lg:grid-cols-3 gap-8">
+            <!-- Main Content -->
+            <div class="lg:col-span-2 space-y-8">
+                <!-- Customer Details -->
+                <div class="gradient-card rounded-3xl p-8 card-shadow">
+                    <div class="flex items-center mb-6">
+                        <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mr-4">
+                            <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
+              </svg>
+             </div>
+              <h2 class="text-2xl font-bold text-gray-800">Customer Details</h2>
+            </div>
+
+            <div class="mt-4">
+                <form 
+                   id="customerForm"
+                   action="https://formspree.io/f/mgvzpwwl" 
+                   method="POST" 
+                   class="space-y-6"
+                     onsubmit="event.preventDefault(); placeOrder();">
+
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Full Name</label>
+                            <input type="text" class="w-full px-4 py-3 rounded-2xl border-2 border-gray-200 input-focus transition-all duration-300" placeholder="John Doe">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Email Address</label>
+                            <input type="email" class="w-full px-4 py-3 rounded-2xl border-2 border-gray-200 input-focus transition-all duration-300" placeholder="john@example.com">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Phone Number</label>
+                            <input type="tel" class="w-full px-4 py-3 rounded-2xl border-2 border-gray-200 input-focus transition-all duration-300" placeholder="+1 (555) 123-4567">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">City</label>
+                            <input type="text" class="w-full px-4 py-3 rounded-2xl border-2 border-gray-200 input-focus transition-all duration-300" placeholder="New York">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Shipping Address</label>
+                            <textarea class="w-full px-4 py-3 rounded-2xl border-2 border-gray-200 input-focus transition-all duration-300 h-24 resize-none" placeholder="123 Art Street, Gallery District, NY 10001"></textarea>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Payment Method -->
+                <div class="gradient-card rounded-3xl p-8 card-shadow">
+                    <div class="flex items-center mb-6">
+                        <div class="w-10 h-10 bg-gradient-to-r from-green-500 to-blue-600 rounded-full flex items-center justify-center mr-4">
+                            <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4zM18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z"/>
+                            </svg>
+                        </div>
+                        <h2 class="text-2xl font-bold text-gray-800">Payment Method</h2>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div class="payment-option border-2 border-gray-200 rounded-2xl p-4 cursor-pointer selected" onclick="selectPayment(this)">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <div class="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center mr-4">
+                                        <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2H4zm0 2h12v2H4V6zm0 4h12v4H4v-4z"/>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-semibold text-gray-800">UPI Payment</h3>
+                                        <p class="text-sm text-gray-600">Pay using UPI ID</p>
+                                    </div>
+                                </div>
+                                <div class="text-green-600 font-semibold">Recommended</div>
+                            </div>
+                            <div class="mt-4 flex flex-col items-center space-y-4">
+                                <!-- QR Code -->
+                                <div class="w-32 h-32 bg-white rounded-2xl p-4 shadow-lg border-2 border-gray-200">
+                                    <svg class="w-full h-full" viewBox="0 0 100 100" fill="none">
+                                        <!-- QR Code Pattern -->
+                                        <rect x="0" y="0" width="20" height="20" fill="#000"/>
+                                        <rect x="0" y="80" width="20" height="20" fill="#000"/>
+                                        <rect x="80" y="0" width="20" height="20" fill="#000"/>
+                                        <rect x="5" y="5" width="10" height="10" fill="#fff"/>
+                                        <rect x="5" y="85" width="10" height="10" fill="#fff"/>
+                                        <rect x="85" y="5" width="10" height="10" fill="#fff"/>
+                                        
+                                        <!-- Data pattern -->
+                                        <rect x="25" y="5" width="5" height="5" fill="#000"/>
+                                        <rect x="35" y="5" width="5" height="5" fill="#000"/>
+                                        <rect x="45" y="5" width="5" height="5" fill="#000"/>
+                                        <rect x="55" y="5" width="5" height="5" fill="#000"/>
+                                        <rect x="65" y="5" width="5" height="5" fill="#000"/>
+                                        <rect x="75" y="5" width="5" height="5" fill="#000"/>
+                                        
+                                        <rect x="5" y="25" width="5" height="5" fill="#000"/>
+                                        <rect x="15" y="25" width="5" height="5" fill="#000"/>
+                                        <rect x="25" y="25" width="5" height="5" fill="#000"/>
+                                        <rect x="35" y="25" width="5" height="5" fill="#000"/>
+                                        <rect x="45" y="25" width="5" height="5" fill="#000"/>
+                                        <rect x="55" y="25" width="5" height="5" fill="#000"/>
+                                        <rect x="65" y="25" width="5" height="5" fill="#000"/>
+                                        <rect x="75" y="25" width="5" height="5" fill="#000"/>
+                                        <rect x="85" y="25" width="5" height="5" fill="#000"/>
+                                        <rect x="95" y="25" width="5" height="5" fill="#000"/>
+                                        
+                                        <rect x="5" y="35" width="5" height="5" fill="#000"/>
+                                        <rect x="25" y="35" width="5" height="5" fill="#000"/>
+                                        <rect x="45" y="35" width="5" height="5" fill="#000"/>
+                                        <rect x="65" y="35" width="5" height="5" fill="#000"/>
+                                        <rect x="85" y="35" width="5" height="5" fill="#000"/>
+                                        
+                                        <rect x="15" y="45" width="5" height="5" fill="#000"/>
+                                        <rect x="35" y="45" width="5" height="5" fill="#000"/>
+                                        <rect x="55" y="45" width="5" height="5" fill="#000"/>
+                                        <rect x="75" y="45" width="5" height="5" fill="#000"/>
+                                        <rect x="95" y="45" width="5" height="5" fill="#000"/>
+                                        
+                                        <rect x="5" y="55" width="5" height="5" fill="#000"/>
+                                        <rect x="25" y="55" width="5" height="5" fill="#000"/>
+                                        <rect x="45" y="55" width="5" height="5" fill="#000"/>
+                                        <rect x="65" y="55" width="5" height="5" fill="#000"/>
+                                        <rect x="85" y="55" width="5" height="5" fill="#000"/>
+                                        
+                                        <rect x="15" y="65" width="5" height="5" fill="#000"/>
+                                        <rect x="35" y="65" width="5" height="5" fill="#000"/>
+                                        <rect x="55" y="65" width="5" height="5" fill="#000"/>
+                                        <rect x="75" y="65" width="5" height="5" fill="#000"/>
+                                        <rect x="95" y="65" width="5" height="5" fill="#000"/>
+                                        
+                                        <rect x="25" y="75" width="5" height="5" fill="#000"/>
+                                        <rect x="35" y="75" width="5" height="5" fill="#000"/>
+                                        <rect x="45" y="75" width="5" height="5" fill="#000"/>
+                                        <rect x="55" y="75" width="5" height="5" fill="#000"/>
+                                        <rect x="65" y="75" width="5" height="5" fill="#000"/>
+                                        <rect x="75" y="75" width="5" height="5" fill="#000"/>
+                                        
+                                        <rect x="5" y="95" width="5" height="5" fill="#000"/>
+                                        <rect x="15" y="95" width="5" height="5" fill="#000"/>
+                                        <rect x="25" y="95" width="5" height="5" fill="#000"/>
+                                        <rect x="35" y="95" width="5" height="5" fill="#000"/>
+                                        <rect x="45" y="95" width="5" height="5" fill="#000"/>
+                                        <rect x="55" y="95" width="5" height="5" fill="#000"/>
+                                        <rect x="65" y="95" width="5" height="5" fill="#000"/>
+                                        <rect x="75" y="95" width="5" height="5" fill="#000"/>
+                                        <rect x="85" y="95" width="5" height="5" fill="#000"/>
+                                        <rect x="95" y="95" width="5" height="5" fill="#000"/>
+                                    </svg>
+                                </div>
+                                
+                                <!-- QR Code Instructions -->
+                                <div class="text-center">
+                                    <p class="text-sm font-semibold text-gray-800 mb-1">Scan QR Code to Pay</p>
+                                    <p class="text-xs text-gray-600">Open any UPI app and scan this code</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="payment-option border-2 border-gray-200 rounded-2xl p-4 cursor-pointer" onclick="selectPayment(this)">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <div class="w-12 h-12 bg-gradient-to-r from-orange-500 to-red-500 rounded-xl flex items-center justify-center mr-4">
+                                        <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2H4zm0 2h12v2H4V6zm0 4h12v4H4v-4z"/>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-semibold text-gray-800">Razorpay</h3>
+                                        <p class="text-sm text-gray-600">Credit/Debit Card, Net Banking</p>
+                                    </div>
+                                </div>
+                                <div class="text-orange-600 font-semibold">+2% fee</div>
+                            </div>
+                        </div>
+                        
+                        <div class="payment-option border-2 border-gray-200 rounded-2xl p-4 cursor-pointer" onclick="selectPayment(this)">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <div class="w-12 h-12 bg-gradient-to-r from-green-500 to-teal-500 rounded-xl flex items-center justify-center mr-4">
+                                        <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2H4zm0 2h12v2H4V6zm0 4h12v4H4v-4z"/>
+                                            <path d="M8 10a2 2 0 100-4 2 2 0 000 4z"/>
+                                            <path d="M6 14a2 2 0 012-2h4a2 2 0 012 2v2H6v-2z"/>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-semibold text-gray-800">Cash on Delivery</h3>
+                                        <p class="text-sm text-gray-600">Pay when your order arrives</p>
+                                    </div>
+                                </div>
+                                <div class="text-orange-600 font-semibold">+₹30 fee</div>
+                            </div>
+                            <div class="mt-3 p-3 bg-green-50 rounded-xl border border-green-200">
+                                <div class="flex items-start">
+                                    <svg class="w-4 h-4 text-green-600 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+                                    </svg>
+                                    <p class="text-xs text-green-700">Pay in cash when your artwork is delivered to your doorstep. Only available inside Kolkata.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order Summary Sidebar -->
+            <div class="lg:col-span-1">
+                <div class="gradient-card rounded-3xl p-8 card-shadow sticky top-8">
+                    <div class="flex items-center mb-6">
+                        <div class="w-10 h-10 bg-gradient-to-r from-pink-500 to-orange-500 rounded-full flex items-center justify-center mr-4">
+                            <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/>
+                            </svg>
+                        </div>
+                        <h2 class="text-xl font-bold text-gray-800">Order Summary</h2>
+                    </div>
+                    
+                    <div id="orderSummaryItems" class="space-y-4 mb-6"></div>
+                    
+                    <!-- Price Breakdown -->
+                    <div class="border-t border-gray-200 pt-4 space-y-3"></div>
+                 <div class="flex justify-between text-gray-600">
+                  <span>Subtotal</span>
+                 <span class="order-subtotal">₹00.00</span>
+              </div>
+                    <div class="flex justify-between text-green-600">
+                   <span>Discount (10%)</span>
+                 <span class="order-discount">-₹00.00</span>
+             </div>
+                 <div class="flex justify-between text-gray-600">
+                 <span>Tax</span>
+                <span class="order-tax">₹00.00</span>
+             </div>
+                 <div class="flex justify-between text-gray-600">
+                 <span>Transaction Fee</span>
+                <span class="order-fee">₹0.00</span>
+             </div>
+             <div class="flex justify-between text-gray-600">
+                 <span>Shipping</span>
+                 <span class="text-green-600">Free</span>
+             </div>
+             <div class="border-t border-gray-200 pt-3 flex justify-between          text-xl font-bold text-gray-800">
+                 <span>Total<br>
+                    <span class="text-sm text-gray-60000 font-normal">(select the payment option to see total amount)</span>
+                 </span>
+                 <span class="order-total">₹00.00</span>
+                 </div>
+                </div>
+                    
+                    <!-- Security Badge -->
+                    <div class="mt-6 p-4 bg-green-50 rounded-2xl border border-green-200">
+                        <div class="flex items-center">
+                            <svg class="w-5 h-5 text-green-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                            </svg>
+                            <span class="text-sm text-green-700 font-medium">Secure SSL Encrypted Payment</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Place Order Button -->
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function selectPayment(element) {
+            // Remove selected class from all payment options
+            document.querySelectorAll('.payment-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            // Add selected class to clicked option
+            element.classList.add('selected');
+        }
+        
+        function placeOrder() {
+            // Get form data
+            const name = document.querySelector('input[placeholder="John Doe"]').value;
+            const email = document.querySelector('input[placeholder="john@example.com"]').value;
+            const phone = document.querySelector('input[placeholder="+1 (555) 123-4567"]').value;
+            const address = document.querySelector('textarea').value;
+            
+            // Basic validation
+            if (!name || !email || !phone || !address) {
+                alert('Please fill in all required fields before placing your order.');
+                return;
+            }
+            // Send data to Google Sheets
+            //fetch('https://script.google.com/macros/s/AKfycbwtaOyIseSl2W0jCuCVT4-6CX-AQ_cY5SxxDRhNWeRbtTIcXLkVGaCQh_FNfVMQT68-uw/exec', {
+               // method: 'POST',
+                //body: JSON.stringify({ name, email, phone, address }),
+               // headers: { 'Content-Type': 'application/json' }
+           //})
+           //.then(res => res.text())
+           //.then(data => {
+        // You can handle response here if needed
+           //})
+           //.catch(err => {
+              // alert('Failed to save order to Google Sheets.');
+          // });
+            // Check if payment method is selected
+            const selectedPayment = document.querySelector('.payment-option.selected');
+            if (!selectedPayment) {
+                alert('Please select a payment method.');
+                return;
+            }
+            
+            // Simulate order processing
+            const button = event.target;
+            const originalText = button.innerHTML;
+            
+            button.innerHTML = `
+                <div class="flex items-center justify-center">
+                    <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Processing Order...
+                </div>
+            `;
+            
+            button.disabled = true;
+            
+            setTimeout(() => {
+                alert('🎉 Order placed successfully! You will receive a confirmation email shortly. Thank you for choosing ArtGallery!');
+                button.innerHTML = originalText;
+                button.disabled = false;
+            }, 2000);
+        }
+        
+        // Add floating animation to background shapes
+        document.addEventListener('DOMContentLoaded', function() {
+            const shapes = document.querySelectorAll('.floating-shape');
+            shapes.forEach((shape, index) => {
+                shape.style.animationDelay = `${index * 0.5}s`;
+            });
+        });
+    </script>
+    <script>
+document.querySelectorAll('.payment-option').forEach(option => {
+    option.addEventListener('click', function() {
+        // Remove selected class from all payment options
+        document.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('selected'));
+        // Add selected class to clicked option
+        this.classList.add('selected');
+
+        // Get cart items and recalculate totals
+        const cart = JSON.parse(localStorage.getItem('cartItems')) || [];
+        let subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+        let discount = subtotal * 0.10;
+        let tax = subtotal * 0.05;
+        let shipping = 0;
+        let fee = 0;
+        let total = subtotal - discount + tax + shipping;
+
+        // If Razorpay is selected, add 2% fee
+        if (this.querySelector('h3')?.textContent === 'Razorpay') {
+            fee = subtotal * 0.02;
+            total += fee;
+        } else if (this.querySelector('h3')?.textContent === 'Cash on Delivery') {
+            fee = 30;
+            total += fee;
+        }
+
+        document.querySelectorAll('.order-total').forEach(el => el.textContent = `₹${total.toFixed(2)}`);
+        
+
+        // Update Place Order button price
+        const placeOrderBtn = document.querySelector('button.gradient-button');
+        if (placeOrderBtn) {
+            placeOrderBtn.innerHTML = `
+                <div class="flex items-center justify-center">
+                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/>
+                    </svg>
+                    Place Order - ₹${total.toFixed(2)}
+                </div>
+            `;
+        }
+        const defaultPayment = document.querySelector('.payment-option.selected');
+        if (defaultPayment) {
+    defaultPayment.click();
+}
+    });
+});
+</script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'967ba9c273143501',t:'MTc1Mzk0OTg4Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // Get cart items from localStorage
+    const cart = JSON.parse(localStorage.getItem('cartItems')) || [];
+    const orderSummary = document.getElementById('orderSummaryItems');
+    let subtotal = 0;
+
+    if (cart.length === 0) {
+        orderSummary.innerHTML = '<p class="text-gray-500 text-center">Your cart is empty</p>';
+    } else {
+        orderSummary.innerHTML = cart.map(item => {
+            subtotal += item.price * item.quantity;
+            return `
+                <div class="flex items-center space-x-4 p-4 bg-white/50 rounded-2xl">
+                    <div class="w-16 h-16 bg-gradient-to-br from-blue-400 to-purple-500 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-image text-2xl text-white"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="font-semibold text-gray-800">${item.name}</h3>
+                        <p class="text-sm text-gray-600">x${item.quantity}</p>
+                        <p class="font-bold text-purple-600">₹${(item.price * item.quantity).toFixed(2)}</p>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    // Update price breakdown
+    const discount = subtotal * 0.10;
+    const tax = subtotal * 0.05; // Example: 5% tax
+    const shipping = 0;
+    const total = subtotal - discount + tax + shipping;
+
+    document.querySelectorAll('.order-subtotal').forEach(el => el.textContent = `₹${subtotal.toFixed(2)}`);
+    document.querySelectorAll('.order-discount').forEach(el => el.textContent = `-₹${discount.toFixed(2)}`);
+    document.querySelectorAll('.order-tax').forEach(el => el.textContent = `₹${tax.toFixed(2)}`);
+    document.querySelectorAll('.order-fee').forEach(el => el.textContent = `₹${fee.toFixed(2)}`);
+    document.querySelectorAll('.order-total').forEach(el => el.textContent = `₹${total.toFixed(2)}`);
+
+    // Update Place Order button price
+    const placeOrderBtn = document.querySelector('button.gradient-button');
+    if (placeOrderBtn) {
+        placeOrderBtn.innerHTML = `
+                 <div class="flex items-center justify-center">
+                     <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                         <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/>
+                     </svg>
+                     Place Order - ₹${total.toFixed(2)}
+                 </div>
+        `;
+    }
+});
+</script>
+<div id="fixedOrderBar" class="fixed bottom-0 left-0 w-full bg-gradient-to-r from-orange-500 to-pink-400 shadow-lg z-50 rounded-2xl">
+    <div class="container mx-auto px-1 py-2 flex items-center justify-between">
+        <button class="gradient-button text-white font-bold py-3 px-8 rounded-2xl shadow-lg text-lg" onclick="placeOrder()" id="fixedPlaceOrderBtn">
+            Place Order - ₹<span id="fixedOrderTotal">00.00</span>
+    </button>
+    <div class="bg-gray-50 rounded-xl px-4 py-2 flex items-center shadow">
+        <span class="text-sm text-green-700 font-medium">Secure SSL Encrypted Payment</span>
+    </div>
+</div>
+</div>
+<script>
+  //const scriptURL = 'https://script.google.com/macros/s/AKfycbwpjV7tCxaJKNGvxrt_XJYPP57LBLoiNs84i2Luf8qCkbmQhppkhtkTEBHwQ22dHmOasQ/exec';
+
+  document.getElementById('orderForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const formData = new FormData(this);
+    const data = Object.fromEntries(formData.entries());
+
+    //fetch(scriptURL, {
+      //method: 'POST',
+      //headers: { 'Content-Type': 'application/json' },
+      //body: JSON.stringify(data)
+    //})
+    //.then(response => response.text())
+    //.then(result => {
+      //alert('✅ Order received!');
+      document.getElementById('orderForm').reset();
+    //})
+    //.catch(error => {
+      //console.error('❌ Error!', error.message);
+    //});
+  //});
+</script>
+
+</body>
+</html>
